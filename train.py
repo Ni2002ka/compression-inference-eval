@@ -108,7 +108,7 @@ for model_name in model_list:
             train_and_save(
                 model_str=model_name,
                 dataset=dataset_name,
-                download=False,
+                download=True,
                 compressor=compression_params,
                 compressor_name=compression_name,
                 save_path="models/",
