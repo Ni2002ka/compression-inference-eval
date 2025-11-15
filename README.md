@@ -3,9 +3,6 @@
 
 Create the environment with the required dependencies:
 
-## Conda
-If the remote supports conda:
-
 ```
 conda env create -f environment.yaml
 ```
