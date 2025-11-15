@@ -65,14 +65,14 @@ for col in metrics:
     df[col] = pd.to_numeric(df[col])
 
 
-# Demean metrics by dataset
-df_demeaned = df.copy()
+# Normalize by baseline (no compression) per dataset
+# Subtract baseline accuaracy and training loss
+# Divide baseline times
+df_improvements = df.copy()
 
-for metric in metrics:
-    df_demeaned[metric] = df.groupby("dataset")[metric].transform(
-        lambda x: x - x.mean()
-    )
+for metric in [metrics[0], metrics[2]]:  # accuracy, train_loss
+    df_improvements[metric] = df.groupby(["dataset", "model"])[metric].transform(lambda x: x - x[df.loc[x.index, "compression"] == "none"].iloc[0])
 
-plot_accuracy_by_dataset(df_demeaned)
-plot_training_speed_by_dataset(df)
-plot_inference_speed_by_dataset(df)
+plot_accuracy_by_dataset(df_improvements)
+# plot_training_speed_by_dataset(df)
+# plot_inference_speed_by_dataset(df)

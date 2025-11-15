@@ -5,7 +5,9 @@ from compress import CompressedDataset, preprocess_and_cache
 
 def get_train_test_data(dataset: str = "fashion",
                          root: str = "data", 
-                         batch_size: int = 64, 
+                         batch_size: int = 64,
+                         train: bool = True,
+                         test: bool = True, 
                          download: bool = False, 
                          compressor: dict | None = None,):
     """
@@ -16,6 +18,9 @@ def get_train_test_data(dataset: str = "fashion",
     batch_size: dataloader batch size
     """
     
+    train_loader = None
+    test_loader  = None
+
     # transform = transforms.ToTensor()
     if compressor is None:
         transform = transforms.ToTensor()
@@ -23,16 +28,25 @@ def get_train_test_data(dataset: str = "fashion",
         transform = None 
 
     if dataset.lower() == "fashion":
-        trainset = datasets.FashionMNIST(root, train=True, download=download, transform=transform)
-        testset  = datasets.FashionMNIST(root, train=False, download=download, transform=transform)
+        if train:
+            trainset = datasets.FashionMNIST(root, train=True, download=download, transform=transform)
+        if test:
+            testset  = datasets.FashionMNIST(root, train=False, download=download, transform=transform)
     elif dataset.lower() == "mnist":
-        trainset = datasets.MNIST(root, train=True, download=download, transform=transform)
-        testset  = datasets.MNIST(root, train=False, download=download, transform=transform)
+        if train:
+            trainset = datasets.MNIST(root, train=True, download=download, transform=transform)
+        if test:
+            testset  = datasets.MNIST(root, train=False, download=download, transform=transform)
+    elif dataset == "cifar10":
+        if train:
+            trainset = datasets.CIFAR10(root, train=True, download=download, transform=transform)
+        if test:
+            testset  = datasets.CIFAR10(root, train=False, download=download, transform=transform)
     else:
-        raise ValueError(f"Unknown dataset '{dataset}'. Choose 'mnist' or 'fashion'.")
+        raise ValueError(f"Unknown dataset '{dataset}'. Choose 'mnist', 'fashion', or 'cifar10'.")
     
 
-    print(f"Loaded dataset {dataset} with {len(trainset)} training samples and {len(testset)} test samples.")
+    print(f"Loaded dataset {dataset}.")
     
 
 
@@ -41,17 +55,16 @@ def get_train_test_data(dataset: str = "fashion",
         fmt     = compressor["format"]
         quality = compressor.get("quality", 100)
 
-        # comp_ds_train = CompressedDataset(trainset, fmt, quality, debug=False)
-        # comp_ds_test = CompressedDataset(testset, fmt, quality)
-        # train_loader = DataLoader(comp_ds_train, batch_size=batch_size, shuffle=True)
-        # test_loader = DataLoader(comp_ds_test, batch_size=batch_size, shuffle=False)
-
         print(f"Applying compression (cached, one-time): format={fmt}, quality={quality}")
 
-        trainset = preprocess_and_cache(trainset, fmt, quality)
-        testset  = preprocess_and_cache(testset, fmt, quality)
+        if train:
+            trainset = preprocess_and_cache(trainset, fmt, quality)
+        if test:
+            testset  = preprocess_and_cache(testset, fmt, quality)
 
-    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
-    test_loader  = DataLoader(testset, batch_size=batch_size, shuffle=False)
+    if train:
+        train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
+    if test:
+        test_loader  = DataLoader(testset, batch_size=batch_size, shuffle=False)
 
     return train_loader, test_loader

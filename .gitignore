@@ -1,0 +1,25 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Venvs
+venv/
+.env/
+.venv/
+env/
+
+# VSCode
+.vscode/
+.history/
+
+# Data and results
+data/
+results/
+models/
+
