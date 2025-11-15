@@ -1,21 +1,33 @@
 # Environment Setup
 
+
 Create the environment with the required dependencies:
 
-bash```
+## Conda
+If the remote supports conda:
+
+```
 conda env create -f environment.yaml
 ```
 
 Activate the environment:
-bash```
+```
 conda activate EE274-proj
 ```
 
+## Python Venv
+Alternatively, we can just create a python venv
+
+```
+python3 -m venv EE274-proj
+source EE274-proj/bin/activate
+pip install -r requirements.txt
+```
 
 # Training
 We train models remotely and save the trained checkpoints to the `models` directory. From your remote machine, after setting up the env, run 
 
-bash```
+```
 python train.py
 ```
 
