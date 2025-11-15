@@ -3,6 +3,37 @@ import torch.nn as nn
 import torch.optim as optim
 import time
 
+class SmallMLP(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Flatten(),                
+            nn.Linear(28 * 28, 256),
+            nn.ReLU(),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Linear(128, 10)
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+
+class SmallNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(28 * 28, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, 10)
+        )
+
+    def forward(self, x):
+        return self.fc(x)
+
 
 class SmallCNN(nn.Module):
     def __init__(self):
@@ -53,10 +84,12 @@ def train(model, train_loader, device="cpu", epochs=5):
         epoch_time = time.time() - epoch_start
         avg_loss = total_loss / len(train_loader)
 
-        print(f"Epoch {epoch+1}/{epochs} | Loss: {avg_loss:.4f} | Time: {epoch_time:.2f}s")
+        # print(f"Epoch {epoch+1}/{epochs} | Loss: {avg_loss:.4f} | Time: {epoch_time:.2f}s")
 
     total_time = time.time() - start_time
-    print(f"\nTotal training time: {total_time:.2f}s\n")
+    avg_time_per_epoch = total_time / epochs
+    return avg_time_per_epoch, total_loss / len(train_loader)
+    # print(f"\nTotal training time: {total_time:.2f}s\n")
 
 
 @torch.no_grad()
@@ -76,6 +109,6 @@ def test(model, test_loader, device="cpu"):
 
     end_time = time.time()
     acc = correct / total
-    print(f"Test accuracy: {acc*100:.2f}%")
-    print(f"Total testing time: {end_time - start_time:.2f}s")
-    return acc
+    # print(f"Test accuracy: {acc*100:.2f}%")
+    # print(f"Total testing time: {end_time - start_time:.2f}s")
+    return acc, end_time - start_time
