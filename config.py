@@ -12,7 +12,7 @@ compression_settings = {
 }
 
 # List of model archs to evaluate
-model_list = ["small-MLP"]
+model_list = ["small-CNN"]
 
 # List of datasets to evaluate
 datasets_list = [

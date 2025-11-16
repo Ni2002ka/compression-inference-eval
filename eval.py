@@ -61,7 +61,7 @@ def test(model, test_loader, device="cpu", verbose=False):
 
 def load_and_eval_model(model_str="small-MLP", dataset="fashion", download=False, compressor=None, compressor_name=None):
 
-    model, train_hist = load_model_and_hist("models", model_str=model_str, dataset=dataset, compressor_name=compressor_name, device="cpu")
+    model, train_hist = load_model_and_hist(f"models/{model_str}", model_str=model_str, dataset=dataset, compressor_name=compressor_name, device="cpu")
     _, test_loader = get_train_test_data(dataset=dataset, root="data/", train=False, test=True, batch_size=64, download=download, compressor=compressor)
     accuracy, test_time = test(model, test_loader, verbose=True)
 
