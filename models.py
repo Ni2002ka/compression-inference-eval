@@ -1,7 +1,6 @@
-import torch
+
 import torch.nn as nn
-import torch.optim as optim
-import time
+
 
 
 class SmallMLP(nn.Module):
@@ -56,28 +55,3 @@ class SmallCNN(nn.Module):
         x = x.flatten(1)
         return self.fc(x)
 
-
-##### Test functions #####
-    # TODO: move this somewhere else
-
-
-@torch.no_grad()
-def test(model, test_loader, device="cpu"):
-    model.to(device)
-    model.eval()
-    
-    correct = 0
-    total = 0
-
-    start_time = time.time()
-    for x, y in test_loader:
-        x, y = x.to(device), y.to(device)
-        pred = model(x).argmax(dim=1)
-        correct += (pred == y).sum().item()
-        total += y.size(0)
-
-    end_time = time.time()
-    acc = correct / total
-    print(f"Test accuracy: {acc*100:.2f}%")
-    print(f"Total testing time: {end_time - start_time:.2f}s")
-    return acc, end_time - start_time

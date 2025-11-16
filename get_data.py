@@ -1,6 +1,6 @@
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from compress import CompressedDataset, preprocess_and_cache
+from compress import preprocess_and_cache
 
 
 def get_train_test_data(dataset: str = "fashion",
