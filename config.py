@@ -2,7 +2,7 @@
 # Configuration settings for image compression experiments
 compression_settings = {
     "none":     None,       # Baseline
-    # "jpeg_1":   {"format": "JPEG", "quality": 1},
+    "jpeg_1":   {"format": "JPEG", "quality": 1},
     "jpeg_10":  {"format": "JPEG", "quality": 10},
     "jpeg_50": {"format": "JPEG", "quality": 50},
     "png": {"format": "PNG"},
@@ -18,5 +18,5 @@ model_list = ["small-MLP"]
 datasets_list = [
                 "mnist", 
                  "fashion",
-                #  "cifar10",
+                 "cifar10",
                  ]

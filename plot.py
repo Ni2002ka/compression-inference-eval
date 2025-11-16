@@ -57,7 +57,7 @@ def plot_inference_speed_by_dataset(df):
 
 
 
-df = pd.read_csv("results.csv")
+df = pd.read_csv("results/MLP_results.csv")
 metrics = ["test_accuracy", "avg_epoch_time", "train_loss", "test_time"]
 
 # Convert metrics to numeric (CSV stores them as strings)
@@ -74,5 +74,5 @@ for metric in [metrics[0], metrics[2]]:  # accuracy, train_loss
     df_improvements[metric] = df.groupby(["dataset", "model"])[metric].transform(lambda x: x - x[df.loc[x.index, "compression"] == "none"].iloc[0])
 
 plot_accuracy_by_dataset(df_improvements)
-# plot_training_speed_by_dataset(df)
-# plot_inference_speed_by_dataset(df)
+plot_training_speed_by_dataset(df)
+plot_inference_speed_by_dataset(df)

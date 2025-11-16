@@ -22,4 +22,4 @@ env/
 data/
 results/
 models/
-
+training_losses/

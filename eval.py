@@ -2,11 +2,12 @@ import csv
 import os
 import time
 import torch
-
+import matplotlib.pyplot as plt
 
 from get_data import get_train_test_data
 from models import SmallCNN, SmallMLP, SmallNN
 from config import compression_settings, model_list, datasets_list
+
 
 
 def load_model_and_hist(checkpoint_dir, model_str, dataset, compressor_name, device="cpu"):
@@ -58,9 +59,9 @@ def test(model, test_loader, device="cpu", verbose=False):
     return acc, end_time - start_time
 
 
-def load_and_eval_model(model_str="small-MLP", dataset="fashion", download=False, compressor=None):
+def load_and_eval_model(model_str="small-MLP", dataset="fashion", download=False, compressor=None, compressor_name=None):
 
-    model, train_hist = load_model_and_hist("models", model_str=model_str, dataset=dataset, compressor_name="none", device="cpu")
+    model, train_hist = load_model_and_hist("models", model_str=model_str, dataset=dataset, compressor_name=compressor_name, device="cpu")
     _, test_loader = get_train_test_data(dataset=dataset, root="data/", train=False, test=True, batch_size=64, download=download, compressor=compressor)
     accuracy, test_time = test(model, test_loader, verbose=True)
 
@@ -80,8 +81,10 @@ def create_eval_csv():
             "test_accuracy", "test_time"
         ])
 
+    
     for model_name in model_list:
         for dataset_name in datasets_list:
+            plt.figure(figsize=(10,6))
             for compression_name, compression_params in compression_settings.items():
 
                 print(f"\n=== Model: {model_name} | Dataset: {dataset_name} | Compression: {compression_name} ===")
@@ -91,6 +94,7 @@ def create_eval_csv():
                     dataset=dataset_name,
                     download=True,
                     compressor=compression_params,
+                    compressor_name=compression_name,
                 )
                 avg_time_per_epoch = train_hist["avg_time_per_epoch"]
                 train_loss = train_hist["epoch_losses"][-1]
@@ -108,6 +112,14 @@ def create_eval_csv():
                         f"{test_time:.4f}",
                     ])
 
+                # Plot training losses
+                plt.plot(train_hist["epoch_losses"], label=compression_name)
+            plt.title(f"Training Losses for {model_name} on {dataset_name}")
+            plt.xlabel("Epoch")
+            plt.ylabel("Loss")
+            plt.legend()
+            plt.savefig(f"training_losses/{model_name}_{dataset_name}.png")
     print("\n*** DONE! Results saved to results.csv ***")
+    
 
 create_eval_csv()
