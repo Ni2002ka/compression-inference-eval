@@ -36,7 +36,7 @@ def plot_training_speed_by_dataset(df):
     )
     g.set_xticklabels(rotation=45)
     g.fig.suptitle("Avg training epoch time vs Compression (per Dataset)", y=1.05)
-    plt.show()
+    plt.savefig("results/training_speed.png")
 
 
 def plot_inference_speed_by_dataset(df):
@@ -53,7 +53,7 @@ def plot_inference_speed_by_dataset(df):
     )
     g.set_xticklabels(rotation=45)
     g.fig.suptitle("Inference Latency vs Compression (per Dataset)", y=1.05)
-    plt.show()
+    plt.savefig("results/inference_speed.png")
 
 
 
@@ -80,7 +80,7 @@ def plot_heatmaps_by_dataset(df, metric="test_accuracy"):
             cmap=cmap,  
             fmt=".3f",
             linewidths=.5,
-            cbar_kws={"label": "Accuracy"}
+            cbar_kws={"label": metric}
         )
 
         plt.title(f"{metric} Heatmap — {ds}", fontsize=16)
@@ -89,7 +89,7 @@ def plot_heatmaps_by_dataset(df, metric="test_accuracy"):
         plt.xticks(rotation=45)
         plt.yticks(rotation=0)
         plt.tight_layout()
-        plt.show()
+        plt.savefig(f"results/{ds}_{metric}.png")
 
 
 
