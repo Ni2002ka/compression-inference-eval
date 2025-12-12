@@ -62,10 +62,10 @@ def test(model, test_loader, device="cpu", verbose=False):
 def load_and_eval_model(model_str="small-MLP", dataset="fashion", download=False, compressor=None, compressor_name=None):
 
     model, train_hist = load_model_and_hist(f"models/{model_str}", model_str=model_str, dataset=dataset, compressor_name=compressor_name, device="cpu")
-    _, test_loader = get_train_test_data(dataset=dataset, root="data/", train=False, test=True, batch_size=64, download=download, compressor=compressor)
+    _, test_loader, ratio = get_train_test_data(dataset=dataset, root="data/", train=False, test=True, batch_size=64, download=download, compressor=compressor, get_ratio=True)
     accuracy, test_time = test(model, test_loader, verbose=True)
 
-    return train_hist, accuracy, test_time
+    return train_hist, accuracy, test_time, ratio
 
 
 
@@ -78,7 +78,8 @@ def create_eval_csv():
         writer.writerow([
             "model", "dataset", "compression",
             "avg_epoch_time", "train_loss",
-            "test_accuracy", "test_time"
+            "test_accuracy", "test_time",
+            "compression_ratio"
         ])
 
     
@@ -89,7 +90,7 @@ def create_eval_csv():
 
                 print(f"\n=== Model: {model_name} | Dataset: {dataset_name} | Compression: {compression_name} ===")
 
-                train_hist, accuracy, test_time = load_and_eval_model(
+                train_hist, accuracy, test_time, comp_ratio = load_and_eval_model(
                     model_str=model_name,
                     dataset=dataset_name,
                     download=True,
@@ -110,6 +111,7 @@ def create_eval_csv():
                         f"{train_loss:.4f}",
                         f"{accuracy:.4f}",
                         f"{test_time:.4f}",
+                        f"{comp_ratio:.4f}"
                     ])
 
                 # Plot training losses

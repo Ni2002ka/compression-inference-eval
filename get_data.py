@@ -1,6 +1,6 @@
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from compress import preprocess_and_cache
+from compression_wrapper import preprocess_and_cache
 
 
 def get_train_test_data(dataset: str = "fashion",
@@ -9,13 +9,19 @@ def get_train_test_data(dataset: str = "fashion",
                          train: bool = True,
                          test: bool = True, 
                          download: bool = False, 
-                         compressor: dict | None = None,):
+                         compressor: dict | None = None,
+                         get_ratio:  bool = False):
     """
     Loads MNIST or Fashion-MNIST and returns train + test dataloaders.
     
     dataset: "mnist" or "fashion"
     root: where to store data
     batch_size: dataloader batch size
+    train: whether to load training data
+    test: whether to load test data
+    download: whether to download data if not present
+    compressor: dict with compression settings, e.g. {"format": "JPEG", "quality": 10}
+    get_ratio: whether to return average compression ratio
     """
     
     train_loader = None
@@ -42,6 +48,11 @@ def get_train_test_data(dataset: str = "fashion",
             trainset = datasets.CIFAR10(root, train=True, download=download, transform=transform)
         if test:
             testset  = datasets.CIFAR10(root, train=False, download=download, transform=transform)
+    elif dataset == "stl10":
+        if train:
+            trainset = datasets.STL10(root, split='train', download=download, transform=transform)
+        if test:
+            testset  = datasets.STL10(root, split='test', download=download, transform=transform)
     else:
         raise ValueError(f"Unknown dataset '{dataset}'. Choose 'mnist', 'fashion', or 'cifar10'.")
     
@@ -49,7 +60,7 @@ def get_train_test_data(dataset: str = "fashion",
     print(f"Loaded dataset {dataset}.")
     
 
-
+    ratio = 24.0 if dataset in ["cifar10", "stl10"] else 8.0  # Default ratio (no compression)
     if compressor:
         print(f"Applying compression: {compressor}")
         fmt     = compressor["format"]
@@ -58,13 +69,16 @@ def get_train_test_data(dataset: str = "fashion",
         print(f"Applying compression (cached, one-time): format={fmt}, quality={quality}")
 
         if train:
-            trainset = preprocess_and_cache(trainset, fmt, quality)
+            trainset, ratio = preprocess_and_cache(trainset, fmt, quality, return_ratio=True)
         if test:
-            testset  = preprocess_and_cache(testset, fmt, quality)
+            testset, ratio  = preprocess_and_cache(testset, fmt, quality, return_ratio=True)
 
     if train:
         train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
     if test:
         test_loader  = DataLoader(testset, batch_size=batch_size, shuffle=False)
 
+    if get_ratio:
+        return train_loader, test_loader, ratio
+    
     return train_loader, test_loader

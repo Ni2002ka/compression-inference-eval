@@ -3,13 +3,14 @@ import torch.nn as nn
 import torch.optim as optim
 import time
 import os
+from tqdm import tqdm
 
 from config import compression_settings, model_list, datasets_list
 from get_data import get_train_test_data
 from models import SmallCNN, SmallMLP, SmallNN
 
 def train(model, train_loader, device="cpu", epochs=5, save_path=None, run_name=None, verbose=False):
-
+    print("Starting training...")
     if save_path:
         if run_name is None:
             raise ValueError("run_name must be provided when using save_path as a directory.")
@@ -31,8 +32,11 @@ def train(model, train_loader, device="cpu", epochs=5, save_path=None, run_name=
     for epoch in range(epochs):
         epoch_start = time.time()
         total_loss = 0.0
-        
-        for x, y in train_loader:
+
+        # Use tqdm if verbose=True, otherwise iterate normally
+        train_iter = tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}", leave=False) if verbose else train_loader
+
+        for x, y in train_iter:
             x, y = x.to(device), y.to(device)
 
             optimizer.zero_grad()
@@ -42,6 +46,9 @@ def train(model, train_loader, device="cpu", epochs=5, save_path=None, run_name=
             optimizer.step()
 
             total_loss += loss.item()
+
+            if verbose:
+                train_iter.set_postfix(loss=loss.item())
 
         epoch_time = time.time() - epoch_start
         avg_loss = total_loss / len(train_loader)
@@ -79,7 +86,6 @@ def train(model, train_loader, device="cpu", epochs=5, save_path=None, run_name=
             print(f"Model checkpoint saved to {checkpoint_path}")
 
     return history
-
 
 def train_and_save(model_str="small-CNN", dataset="fashion", download=False, compressor=None, compressor_name=None, save_path="checkpoints/"):
 

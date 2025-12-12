@@ -1,0 +1,10 @@
+model,dataset,compression,avg_epoch_time,train_loss,test_accuracy,test_time
+small-CNN,stl10,none,8.0858,0.0139,0.5234,5.7755
+small-CNN,stl10,jpeg_1,7.3729,0.0072,0.4639,4.7400
+small-CNN,stl10,jpeg_10,7.4071,0.0110,0.5179,4.7183
+small-CNN,stl10,jpeg_50,7.3920,0.0139,0.5329,4.7886
+small-CNN,stl10,png,7.3697,0.0093,0.5264,4.7661
+small-CNN,stl10,webp_1,7.4739,0.0151,0.4926,4.7703
+small-CNN,stl10,webp_5,7.5129,0.0150,0.5109,4.8604
+small-CNN,stl10,webp_20,7.5116,0.0101,0.5112,4.8133
+small-CNN,stl10,hific,7.6555,0.0231,0.5099,5.0738

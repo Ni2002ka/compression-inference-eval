@@ -9,6 +9,7 @@ compression_settings = {
     "webp_1": {"format": "WEBP", "quality": 1},
     "webp_5": {"format": "WEBP", "quality": 5},
     "webp_20": {"format": "WEBP", "quality": 20},
+    # "hific": {"format": "HIFIC", "quality": "low"},
 }
 
 # List of model archs to evaluate
@@ -16,7 +17,8 @@ model_list = ["small-CNN"]
 
 # List of datasets to evaluate
 datasets_list = [
-                "mnist", 
+                # "mnist", 
                  "fashion",
-                 "cifar10",
+                #  "cifar10",
+                #  "stl10"
                  ]
