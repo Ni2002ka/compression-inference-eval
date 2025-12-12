@@ -31,6 +31,7 @@ curl -sS https://bootstrap.pypa.io/get-pip.py | python
 pip install -r requirements.txt
 ```
 
+
 # Training
 We train models remotely and save the trained checkpoints to the `models` directory. From your remote machine, after setting up the env, run 
 
@@ -39,3 +40,17 @@ python train.py
 ```
 
 to train and save all the model-dataset-compression configurations given in `config.py`.
+
+
+# Evaluation
+Evaluate the trained models (place them in the `models/` directory), and run 
+
+```
+python train.py
+```
+
+to produce a csv file with training and inference results. 
+
+
+# Plotting
+Different plotting functions can be found in `plot.py`.
